@@ -1,0 +1,462 @@
+[
+  {
+    "id": "k001",
+    "clip": "clips/k001.mp4",
+    "aiClip": "clips/k001_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-16 21:31",
+    "niveau": "gemiddeld",
+    "echt": {
+      "vlieg": 2
+    },
+    "ai": {
+      "vlieg": 2
+    },
+    "aiConf": 0.74,
+    "weetje": ""
+  },
+  {
+    "id": "k003",
+    "clip": "clips/k003.mp4",
+    "aiClip": "clips/k003_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-01 01:21",
+    "niveau": "makkelijk",
+    "echt": {},
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k005",
+    "clip": "clips/k005.mp4",
+    "aiClip": "clips/k005_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-01 22:46",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 2
+    },
+    "ai": {
+      "mot": 2
+    },
+    "aiConf": 0.76,
+    "weetje": ""
+  },
+  {
+    "id": "k006",
+    "clip": "clips/k006.mp4",
+    "aiClip": "clips/k006_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-09-03 21:06",
+    "niveau": "makkelijk",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.78,
+    "weetje": ""
+  },
+  {
+    "id": "k008",
+    "clip": "clips/k008.mp4",
+    "aiClip": "clips/k008_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-09 21:32",
+    "niveau": "moeilijk",
+    "echt": {
+      "anders": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.8,
+    "weetje": ""
+  },
+  {
+    "id": "k009",
+    "clip": "clips/k009.mp4",
+    "aiClip": "clips/k009_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-15 21:39",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.86,
+    "weetje": ""
+  },
+  {
+    "id": "k010",
+    "clip": "clips/k010.mp4",
+    "aiClip": "clips/k010_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-15 21:41",
+    "niveau": "makkelijk",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.84,
+    "weetje": ""
+  },
+  {
+    "id": "k011",
+    "clip": "clips/k011.mp4",
+    "aiClip": "clips/k011_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-17 21:53",
+    "niveau": "makkelijk",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.88,
+    "weetje": ""
+  },
+  {
+    "id": "k012",
+    "clip": "clips/k012.mp4",
+    "aiClip": "clips/k012_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-23 22:09",
+    "niveau": "makkelijk",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.82,
+    "weetje": ""
+  },
+  {
+    "id": "k013",
+    "clip": "clips/k013.mp4",
+    "aiClip": "clips/k013_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-26 22:45",
+    "niveau": "makkelijk",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k016",
+    "clip": "clips/k016.mp4",
+    "aiClip": "clips/k016_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-07-31 01:28",
+    "niveau": "gemiddeld",
+    "echt": {
+      "anders": 1
+    },
+    "ai": {
+      "anders": 1
+    },
+    "aiConf": 0.87,
+    "weetje": ""
+  },
+  {
+    "id": "k017",
+    "clip": "clips/k017.mp4",
+    "aiClip": "clips/k017_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-30 21:05",
+    "niveau": "moeilijk",
+    "echt": {},
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k018",
+    "clip": "clips/k018.mp4",
+    "aiClip": "clips/k018_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-09-03 20:48",
+    "niveau": "gemiddeld",
+    "echt": {
+      "vlieg": 1
+    },
+    "ai": {
+      "vlieg": 2
+    },
+    "aiConf": 0.77,
+    "weetje": ""
+  },
+  {
+    "id": "k019",
+    "clip": "clips/k019.mp4",
+    "aiClip": "clips/k019_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-09-03 21:05",
+    "niveau": "gemiddeld",
+    "echt": {
+      "vlieg": 2
+    },
+    "ai": {
+      "vlieg": 2
+    },
+    "aiConf": 0.75,
+    "weetje": ""
+  },
+  {
+    "id": "k020",
+    "clip": "clips/k020.mp4",
+    "aiClip": "clips/k020_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-09-04 23:20",
+    "niveau": "moeilijk",
+    "echt": {
+      "vlieg": 1,
+      "anders": 1
+    },
+    "ai": {
+      "anders": 1
+    },
+    "aiConf": 0.8,
+    "weetje": ""
+  },
+  {
+    "id": "k022",
+    "clip": "clips/k022.mp4",
+    "aiClip": "clips/k022_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-09-08 20:43",
+    "niveau": "moeilijk",
+    "echt": {
+      "anders": 1,
+      "vlieg": 1
+    },
+    "ai": {
+      "anders": 1,
+      "vlieg": 1
+    },
+    "aiConf": 0.77,
+    "weetje": ""
+  },
+  {
+    "id": "k023",
+    "clip": "clips/k023.mp4",
+    "aiClip": "clips/k023_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-09 21:49",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 2
+    },
+    "ai": {
+      "mot": 2
+    },
+    "aiConf": 0.77,
+    "weetje": "Het is een rups dus eigenlijk een mot"
+  },
+  {
+    "id": "k025",
+    "clip": "clips/k025.mp4",
+    "aiClip": "clips/k025_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-10 21:23",
+    "niveau": "makkelijk",
+    "echt": {},
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k026",
+    "clip": "clips/k026.mp4",
+    "aiClip": "clips/k026_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-11 04:54",
+    "niveau": "makkelijk",
+    "echt": {},
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k027",
+    "clip": "clips/k027.mp4",
+    "aiClip": "clips/k027_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-11 05:08",
+    "niveau": "moeilijk",
+    "echt": {
+      "anders": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.76,
+    "weetje": ""
+  },
+  {
+    "id": "k028",
+    "clip": "clips/k028.mp4",
+    "aiClip": "clips/k028_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-13 00:10",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.78,
+    "weetje": ""
+  },
+  {
+    "id": "k030",
+    "clip": "clips/k030.mp4",
+    "aiClip": "clips/k030_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-17 21:37",
+    "niveau": "moeilijk",
+    "echt": {
+      "vlieg": 2,
+      "mot": 2
+    },
+    "ai": {
+      "mot": 2,
+      "vlieg": 1
+    },
+    "aiConf": 0.78,
+    "weetje": ""
+  },
+  {
+    "id": "k031",
+    "clip": "clips/k031.mp4",
+    "aiClip": "clips/k031_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-18 21:38",
+    "niveau": "moeilijk",
+    "echt": {},
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k032",
+    "clip": "clips/k032.mp4",
+    "aiClip": "clips/k032_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-18 22:13",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.8,
+    "weetje": ""
+  },
+  {
+    "id": "k038",
+    "clip": "clips/k038.mp4",
+    "aiClip": "clips/k038_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-02 02:38",
+    "niveau": "makkelijk",
+    "echt": {},
+    "ai": {},
+    "aiConf": null,
+    "weetje": ""
+  },
+  {
+    "id": "k047",
+    "clip": "clips/k047.mp4",
+    "aiClip": "clips/k047_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-09-04 21:38",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 2
+    },
+    "ai": {
+      "mot": 2
+    },
+    "aiConf": 0.78,
+    "weetje": ""
+  },
+  {
+    "id": "k050",
+    "clip": "clips/k050.mp4",
+    "aiClip": "clips/k050_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-07 22:17",
+    "niveau": "makkelijk",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "anders": 1
+    },
+    "aiConf": 0.91,
+    "weetje": ""
+  },
+  {
+    "id": "k053",
+    "clip": "clips/k053.mp4",
+    "aiClip": "clips/k053_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-11 22:29",
+    "niveau": "moeilijk",
+    "echt": {
+      "mot": 2,
+      "anders": 1
+    },
+    "ai": {
+      "anders": 2
+    },
+    "aiConf": 0.81,
+    "weetje": ""
+  },
+  {
+    "id": "k055",
+    "clip": "clips/k055.mp4",
+    "aiClip": "clips/k055_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-08-27 21:07",
+    "niveau": "gemiddeld",
+    "echt": {
+      "mot": 1
+    },
+    "ai": {
+      "mot": 1
+    },
+    "aiConf": 0.81,
+    "weetje": ""
+  },
+  {
+    "id": "k058",
+    "clip": "clips/k058.mp4",
+    "aiClip": "clips/k058_ai.mp4",
+    "loc": "ASK5",
+    "tijd": "2024-07-30 23:20",
+    "niveau": "moeilijk",
+    "echt": {
+      "mot": 2
+    },
+    "ai": {
+      "mot": 2
+    },
+    "aiConf": 0.8,
+    "weetje": ""
+  }
+]

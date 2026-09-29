@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nachtbezoek Ranglijst</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+[hidden]{display:none!important}
+:root{
+  color-scheme: dark;
+  --bg:#0d1316; --panel:#161f24; --line:#26333a; --text:#e6ebe5; --muted:#93a39f;
+  --flower:#d39abd; --ai:#7fd3c8; --truth:#eab75b;
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+html,body{background:var(--bg);color:var(--text);height:100%}
+body{font-family:var(--body);font-size:clamp(14px,1.4vw,22px);line-height:1.4}
+.wrap{min-height:100%;box-sizing:border-box;padding-inline:clamp(16px,3vw,56px);padding-block:clamp(16px,3vw,48px);
+  display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(20px,3vw,56px)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,3.6vw,4.2rem);line-height:1;margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--mono);font-size:.7em;letter-spacing:.16em;text-transform:uppercase;color:var(--flower)}
+.links{display:flex;flex-direction:column;gap:clamp(12px,1.6vw,24px);min-width:0}
+.rank{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.rank li{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto auto;gap:1em;align-items:baseline;
+  padding-block:.55em;padding-inline:.5em;border-bottom:1px solid var(--line);transition:background 1.2s}
+.rank li.nieuw{background:rgba(211,154,189,.22)}
+.pos{font-family:var(--mono);color:var(--muted)}
+.rank li:nth-child(-n+3) .pos{color:var(--flower);font-weight:600}
+.nm{font-family:var(--display);font-weight:800;font-size:1.35em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sec{font-family:var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.sc{font-family:var(--mono);font-weight:600;font-size:1.2em;font-variant-numeric:tabular-nums}
+.leeg{color:var(--muted);padding-block:1em}
+.rechts{display:flex;flex-direction:column;gap:clamp(12px,1.6vw,24px)}
+.qr{background:#fff;border-radius:14px;padding:clamp(10px,1.2vw,18px);align-self:flex-start;max-width:100%}
+.qr canvas,.qr img{display:block;width:clamp(150px,18vw,300px)!important;height:auto!important}
+.speel{font-family:var(--display);font-weight:800;font-size:1.6em;line-height:1.1}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--panel);border-radius:12px;padding:.8em 1em;display:flex;flex-direction:column}
+.stat .lbl{font-family:var(--mono);font-size:.65em;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--display);font-weight:800;font-size:2em;line-height:1.1;font-variant-numeric:tabular-nums}
+.vs{grid-column:1/-1}
+.meter{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.meter div{display:grid;grid-template-columns:6.5em 1fr 3.2em;gap:10px;align-items:center;font-size:.85em}
+.meter .track{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.meter .fill{height:100%;border-radius:6px}
+.meter b{font-family:var(--mono);text-align:right}
+.voet{font-family:var(--mono);font-size:.65em;color:var(--muted)}
+.demo-flag{font-family:var(--mono);font-size:.7em;color:var(--truth);border:1px dashed var(--truth);padding:5px 9px;border-radius:6px;align-self:flex-start}
+@media (max-width:760px){.wrap{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){.rank li{transition:none}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <section class="links">
+    <span class="eyebrow">Nachtbezoek · Mens tegen AI</span>
+    <h1>Wie telt de nachtbezoekers het best?</h1>
+    <span class="demo-flag" id="demo" hidden>Demo · voorbeeldnamen</span>
+    <ol class="rank" id="rank"></ol>
+  </section>
+  <aside class="rechts">
+    <div class="qr" id="qr" aria-label="QR-code naar de quiz"></div>
+    <div class="speel">Scan en speel mee.<br><span style="color:var(--muted);font-weight:500;font-size:.6em">Tel de nachtbezoekers in 10 korte fragmenten. Versla jij de AI?</span></div>
+    <div class="stats">
+      <div class="stat"><span class="lbl">Deelnemers</span><span class="v" id="aantal">0</span></div>
+      <div class="stat"><span class="lbl">Snelste topscore</span><span class="v" id="snel">–</span></div>
+      <div class="stat vs"><span class="lbl">Gemiddeld goed (van de echte bezoeken)</span>
+        <div class="meter">
+          <div><span>Bezoekers</span><span class="track"><span class="fill" id="fm" style="background:var(--flower);display:block"></span></span><b id="vm">–</b></div>
+          <div><span style="color:var(--ai)">AI-model</span><span class="track"><span class="fill" id="fa" style="background:var(--ai);display:block"></span></span><b id="va">–</b></div>
+        </div>
+      </div>
+    </div>
+    <span class="voet" id="voet">Wordt elke 10 seconden bijgewerkt</span>
+  </aside>
+</div>
+
+<script>
+/* Zelfde web-app-URL als in index.html */
+const SCOREBORD_URL = "https://script.google.com/macros/s/AKfycby2FcaUb8k1dcUNs1nb8Rsu_pmJLXYcE4p4VZrZRoKF_ciY4AGjeqGSueeI8iKsEi_d/exec";
+/* Link naar de quiz voor de QR-code. Leeg = de map waar deze pagina staat. */
+const QUIZ_URL = "";
+const VERVERS_MS = 10000;
+const TOON = 12;
+
+const VOORBEELD = [
+  {id:"a",naam:"Nachtuil",score:12,afw:1,sec:71.4,ai:10,n:13},{id:"b",naam:"Pijlstaart",score:10,afw:2,sec:58.2,ai:9,n:12},
+  {id:"c",naam:"Mottenjager",score:10,afw:2,sec:83.0,ai:10,n:12},{id:"d",naam:"Koninginnekruid",score:8,afw:4,sec:64.9,ai:9,n:12},
+  {id:"e",naam:"Lampje",score:6,afw:6,sec:49.7,ai:8,n:11},{id:"f",naam:"Stadsvlinder",score:5,afw:7,sec:92.3,ai:9,n:12}
+];
+
+const quiz = QUIZ_URL || location.href.replace(/[^/]*$/, "");
+try{ new QRCode(document.getElementById("qr"),{text:quiz,width:300,height:300,colorDark:"#0d1316",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M}); }
+catch(e){ document.getElementById("qr").textContent = quiz; }
+
+let bekend = new Set(), eerste = true;
+async function haal(){
+  let lijst = VOORBEELD, demo = true;
+  if(SCOREBORD_URL){
+    try{ const r = await fetch(SCOREBORD_URL+"?t="+Date.now()); lijst = await r.json(); demo = false;
+      document.getElementById("voet").textContent = "Bijgewerkt om "+new Date().toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+    }catch(e){ document.getElementById("voet").textContent = "Geen verbinding, probeer opnieuw…"; return; }
+  }
+  document.getElementById("demo").hidden = !demo;
+  const aandeel=x=>x.n?x.score/x.n:0;
+  lijst = lijst.slice().sort((a,b)=>aandeel(b)-aandeel(a)||a.afw-b.afw||a.sec-b.sec);
+  const ol = document.getElementById("rank"); ol.replaceChildren();
+  if(!lijst.length){ const li=document.createElement("li"); li.className="leeg"; li.textContent="Nog niemand. Wees de eerste!"; ol.append(li); }
+  lijst.slice(0,TOON).forEach((x,i)=>{
+    const li=document.createElement("li");
+    if(!eerste && !bekend.has(x.id)) li.className="nieuw";
+    const n = x.n || 1;
+    li.innerHTML=`<span class="pos">${i+1}</span><span class="nm"></span><span class="sec">${Number(x.sec).toFixed(0)} s</span><span class="sc">${x.score}/${n}</span>`;
+    li.querySelector(".nm").textContent = x.naam;
+    ol.append(li);
+  });
+  setTimeout(()=>ol.querySelectorAll(".nieuw").forEach(li=>li.classList.remove("nieuw")),4000);
+  bekend = new Set(lijst.map(x=>x.id)); eerste = false;
+
+  document.getElementById("aantal").textContent = lijst.length;
+  const top = lijst[0]; document.getElementById("snel").textContent = top ? Number(top.sec).toFixed(0)+" s" : "–";
+  const pct = k => lijst.length ? lijst.reduce((s,x)=>s + x[k]/(x.n||1), 0)/lijst.length*100 : 0;
+  const m = pct("score"), a = pct("ai");
+  document.getElementById("fm").style.width = m+"%"; document.getElementById("vm").textContent = lijst.length? Math.round(m)+"%" : "–";
+  document.getElementById("fa").style.width = a+"%"; document.getElementById("va").textContent = lijst.length? Math.round(a)+"%" : "–";
+}
+haal(); setInterval(haal, VERVERS_MS);
+</script>
+
+</body>
+</html>

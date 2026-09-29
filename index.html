@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nachtbezoek Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+[hidden]{display:none!important}
+:root{
+  color-scheme: dark;
+  --bg:#0d1316; --panel:#161f24; --line:#26333a; --text:#e6ebe5; --muted:#93a39f;
+  --flower:#d39abd; --ai:#7fd3c8; --truth:#eab75b; --you:#e6ebe5;
+  --good:#8fd694; --bad:#ef8a7a;
+  --display:"Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+html,body{background:var(--bg);color:var(--text)}
+body{font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:flex;flex-direction:column;gap:18px}
+h1,h2{font-family:var(--display);font-weight:800;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.3rem,9vw,3.2rem);letter-spacing:-.01em}
+h2{font-size:1.5rem}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--flower)}
+.muted{color:var(--muted)}
+.demo-flag{font-family:var(--mono);font-size:.72rem;color:var(--truth);border:1px dashed var(--truth);padding:6px 10px;border-radius:6px;align-self:flex-start}
+.btn{font:700 1.05rem var(--body);border:0;border-radius:12px;padding:15px 18px;background:var(--flower);color:#1a0f16;cursor:pointer;width:100%}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn:focus-visible,.step button:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.9rem}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.screen{position:relative;width:100%;aspect-ratio:4/3;max-width:100%;border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.screen canvas,.screen video{width:100%;height:100%;display:block;object-fit:contain}
+.progress{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.progress b{color:var(--text);font-size:1rem}
+.counts{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding-block:10px;border-bottom:1px solid var(--line)}
+.row .name{font-weight:700}
+.row .latin{font-family:var(--mono);font-size:.72rem;color:var(--muted);display:block}
+.step{display:flex;align-items:center;gap:10px}
+.step button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:1.4rem;line-height:1;cursor:pointer}
+.step output{font-family:var(--mono);font-weight:600;font-size:1.3rem;min-width:1.5ch;text-align:center;font-variant-numeric:tabular-nums}
+.step output.zero{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:9px 6px;text-align:center;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+td:first-child,th:first-child{text-align:left}
+td.num{font-family:var(--mono);font-size:1.05rem}
+th.you{color:var(--you)} th.ai{color:var(--ai)} th.truth{color:var(--truth)}
+td.miss{color:var(--bad)}
+.verdicts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.verdict{padding:12px;border-radius:10px;background:var(--panel)}
+.verdict .who{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.verdict .res{font-family:var(--display);font-weight:800;font-size:1.25rem}
+.ok{color:var(--good)} .no{color:var(--bad)}
+.fact{border-left:3px solid var(--flower);padding-left:12px;color:var(--muted)}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.score div{background:var(--panel);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:2px}
+.score .big{font-family:var(--display);font-weight:800;font-size:3rem;line-height:1;font-variant-numeric:tabular-nums}
+.score .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.recap{display:flex;gap:6px;flex-wrap:wrap}
+.recap span{font-family:var(--mono);font-size:.75rem;padding:4px 8px;border-radius:6px;background:var(--panel)}
+
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--flower)}
+.results{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.res-row{display:flex;flex-direction:column;gap:8px;padding-block:14px;border-bottom:1px solid var(--line)}
+.res-head{display:flex;gap:10px;align-items:baseline;font-family:var(--mono);font-size:.8rem}
+.res-head b{font-size:1rem}
+dl{display:grid;grid-template-columns:4.5em 1fr;gap:4px 10px;margin:0}
+dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding-top:3px}
+dd{margin:0}
+.res-row .fact{font-size:.9rem}
+
+.ended{position:absolute;left:10px;bottom:10px;display:flex}
+.ended span{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:#e6ebe5;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:6px}
+.melding{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,14,16,.6);padding:16px;text-align:center}
+.melding button{font:700 1rem var(--body);padding:12px 18px;border-radius:999px;border:0;background:var(--flower);color:#1a0f16;cursor:pointer}
+.melding p{color:#e6ebe5;font-family:var(--mono);font-size:.8rem;margin:0}
+.acties{display:grid;grid-template-columns:auto 1fr;gap:10px}
+.acties .ghost{width:auto}
+.btn:disabled{opacity:.4;cursor:default}
+
+.score.three{grid-template-columns:repeat(3,1fr)}
+.score.three .big{font-size:2.3rem}
+.score .of{font-size:1.1rem}
+tr.tot td{font-weight:700;border-bottom:0}
+.detail summary{cursor:pointer;font-weight:700;padding-block:6px;color:var(--flower)}
+.nick{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:12px;background:var(--panel)}
+.nick label{font-weight:700}
+.nick input{font:1.1rem var(--body);padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.nick input:focus-visible{outline:3px solid var(--ai);outline-offset:1px}
+.rank{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.rank li{display:grid;grid-template-columns:2.2em 1fr auto auto;gap:10px;align-items:center;padding:11px 8px;border-bottom:1px solid var(--line)}
+.rank .pos{font-family:var(--mono);color:var(--muted)}
+.rank .sc{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+.rank li.me{background:var(--panel);border-radius:8px}
+.rank li.me .nm{color:var(--flower);font-weight:700}
+
+.ai-view .play{position:absolute;left:10px;bottom:10px;font:700 .9rem var(--body);padding:9px 12px;border-radius:999px;border:0;background:var(--ai);color:#0d1316;cursor:pointer}
+.ai-view .play:focus-visible{outline:3px solid var(--text);outline-offset:2px}
+.rank .sec{font-family:var(--mono);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.score .sub{font-size:.85rem;font-weight:700}
+.score .split{display:flex;flex-direction:column;gap:1px;margin-top:6px;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.score .split .ok{color:var(--good)}
+.uitleg,.groepen{display:flex;flex-direction:column;gap:8px}
+.uitleg h2,.groepen h2{font-size:1.15rem}
+.uitleg ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.groepen dl{display:grid;grid-template-columns:minmax(7.5em,auto) 1fr;gap:8px 12px;margin:0;border-top:1px solid var(--line);padding-top:10px}
+.groepen dt{font-weight:700}
+.groepen dd{margin:0;color:var(--muted);font-size:.92rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app"></div>
+
+<script>
+/* ============================================================
+   RONDES — vervang dit door echte data.
+   clip: pad naar mp4 (bijv. "clips/r1.mp4"); null = nepbeeld.
+   aiClip: dezelfde clip met YOLO-boxen erin (ultralytics save=True).
+   echt / ai: aantallen per orde. aiConf: zekerheid van het model.
+   ============================================================ */
+const ORDES = [
+  {id:"mot",   naam:"Mot / vlinder", latijn:"Lepidoptera"},
+  {id:"vlieg", naam:"Vlieg / mug",   latijn:"Diptera"},
+  {id:"kever", naam:"Kever",         latijn:"Coleoptera"},
+  {id:"wesp",  naam:"Wesp / bij",    latijn:"Hymenoptera"},
+  {id:"anders",naam:"Iets anders",   latijn:"overige ordes"}
+];
+const DUUR = 3000; // lengte nepfragment in ms
+const POOL_BASIS = [
+  {clip:null, loc:"Klaterweg 6", tijd:"2025-08-14 01:23", echt:{mot:1}, ai:{mot:1}, aiConf:.91,
+   weetje:"Motten zijn de belangrijkste nachtelijke bezoekers van koninginnekruid."},
+  {clip:null, loc:"ASK4", tijd:"2025-08-14 02:07", echt:{mot:2}, ai:{mot:1}, aiConf:.74,
+   weetje:"Twee motten die elkaar overlappen ziet het model vaak als één."},
+  {clip:null, loc:"Hijkerveld", tijd:"2025-08-15 23:48", echt:{}, ai:{mot:1}, aiConf:.41,
+   weetje:"Een bewegend blad kan het model voor een mot aanzien. Dat heet een vals positief."},
+  {clip:null, loc:"Lebretshoeve", tijd:"2025-08-16 00:31", echt:{vlieg:1}, ai:{vlieg:1}, aiConf:.66,
+   weetje:"Ook vliegen en muggen bezoeken 's nachts bloemen."},
+  {clip:null, loc:"Klaterweg 7", tijd:"2025-08-16 03:12", echt:{mot:1,vlieg:1}, ai:{mot:1,vlieg:1}, aiConf:.83,
+   weetje:"Soms zitten er verschillende bezoekers tegelijk op één bloemscherm."},
+  {clip:null, loc:"ASK5", tijd:"2025-08-17 01:55", echt:{kever:1}, ai:{}, aiConf:null,
+   weetje:"Een kever die stil zit en niet beweegt, mist het model makkelijk."},
+  {clip:null, loc:"Klaterweg 6", tijd:"2025-08-18 02:40", echt:{mot:3}, ai:{mot:3}, aiConf:.88,
+   weetje:"Op drukke nachten tellen we tientallen bezoeken per camera."},
+  {clip:null, loc:"Hijkerveld", tijd:"2025-08-19 22:59", echt:{wesp:1}, ai:{vlieg:1}, aiConf:.52,
+   weetje:"Wespen en vliegen lijken in infrarood erg op elkaar. Het model twijfelde hier ook."},
+  {clip:null, loc:"ASK4", tijd:"2025-08-20 01:04", echt:{mot:1,anders:1}, ai:{mot:1}, aiConf:.79,
+   weetje:"Een spin op de bloem is geen insect. Het model is er niet op getraind en negeert hem."},
+  {clip:null, loc:"Lebretshoeve", tijd:"2025-08-21 00:17", echt:{}, ai:{}, aiConf:null,
+   weetje:"De meeste uren film je niets. Daarom leert het model ook van lege beelden."}
+];
+
+/* Pool: elke speler krijgt PER_SPEL willekeurige fragmenten uit de pool.
+   Demo: de 10 voorbeelden hierboven x3 met andere beelden. Straks: jouw 30 echte clips. */
+const PER_SPEL = 10;
+const LOCS=["Klaterweg 6","Klaterweg 7","ASK4","ASK5","Hijkerveld","Lebretshoeve"];
+let POOL = POOL_BASIS.some(r=>r.clip) ? POOL_BASIS : [0,1,2].flatMap(k=>POOL_BASIS.map((r,i)=>({...r,
+  seed:k*10+i, loc:k?LOCS[(i+k*2)%LOCS.length]:r.loc})));
+/* Mix per spel als de rondes een "niveau" hebben (makkelijk / gemiddeld / moeilijk). */
+const MIX = {makkelijk:4, gemiddeld:4, moeilijk:2};
+let RONDES = [];
+function schud(p){p=p.slice();for(let i=p.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[p[i],p[j]]=[p[j],p[i]];}return p;}
+function trek(){
+  if(POOL.every(r=>r.niveau)){
+    let keuze=[]; Object.entries(MIX).forEach(([nv,k])=>keuze.push(...schud(POOL.filter(r=>r.niveau===nv)).slice(0,k)));
+    const rest=schud(POOL.filter(r=>!keuze.includes(r)));
+    while(keuze.length<PER_SPEL&&rest.length) keuze.push(rest.shift());
+    return schud(keuze).slice(0,PER_SPEL);
+  }
+  return schud(POOL).slice(0,Math.min(PER_SPEL,POOL.length));
+}
+/* Op je eigen site: rondes.json naast deze pagina vervangt de demo-rondes. */
+async function laadRondes(){
+  try{ const res=await fetch("rondes.json",{cache:"no-store"}); if(!res.ok) return;
+    const data=await res.json(); if(Array.isArray(data)&&data.length){ POOL=data; start(); } }catch(e){}
+}
+
+/* ================= logica ================= */
+const app = document.getElementById("app");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let ronde = 0, antwoord = {}, uitslag = [], anim = null, t0spel = 0, duurSpel = 0;
+
+const n = (o,k)=>o[k]||0;
+const gelijk = (a,b)=>ORDES.every(o=>n(a,o.id)===n(b,o.id));
+const totaal = o=>ORDES.reduce((s,x)=>s+n(o,x.id),0);
+function el(html){const t=document.createElement("template");t.innerHTML=html.trim();return t.content;}
+function stopAnim(){ if(anim){cancelAnimationFrame(anim);anim=null;} }
+
+function start(){
+  stopAnim(); ronde=0; uitslag=[];
+  app.replaceChildren(el(`
+    <span class="eyebrow">Wetenschapsmarkt · Universiteit Leiden</span>
+    <h1>Wie bezoekt de bloem in het donker?</h1>
+    <p>Camera's filmen 's nachts bloeiend koninginnekruid. Omdat het donker is, filmen ze met infrarood, daarom is het beeld zwart-wit. Een AI-model telt de beestjes die op de bloemen komen. Kun jij het beter?</p>
+    <div class="uitleg">
+      <h2>Zo werkt het</h2>
+      <ol>
+        <li>Je krijgt <b>10 korte fragmenten</b> van 3 seconden. Je mag elk fragment opnieuw bekijken.</li>
+        <li>Tel per groep <b>hoeveel verschillende beestjes</b> je op de bloemen ziet, met de + en −.</li>
+        <li><b>Zie je niets?</b> Dan hoef je niets in te vullen. Laat alles op 0 staan en ga door.</li>
+        <li>Aan het eind zie je hoeveel bezoeken jij goed had, hoeveel de AI, en wat er echt was.</li>
+      </ol>
+    </div>
+    <div class="groepen">
+      <h2>De groepen</h2>
+      <dl>
+        <dt>Mot / vlinder</dt><dd>Nachtvlinders, met brede vleugels. Ook rupsen tellen hier mee.</dd>
+        <dt>Vlieg / mug</dt><dd>Vliegen, muggen en zweefvliegen: twee vleugels, vaak klein en snel.</dd>
+        <dt>Kever</dt><dd>Stevig lijf met harde dekschilden.</dd>
+        <dt>Wesp / bij</dt><dd>Wespen, bijen en hommels, met een wespentaille.</dd>
+        <dt>Iets anders</dt><dd>Spinnen, hooiwagens, oorwormen, wantsen, sprinkhanen en andere beestjes.</dd>
+      </dl>
+    </div>
+    <p class="muted">Bij een gelijke score wint wie het snelst was.</p>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--you)"></i>Jij</span>
+      <span><i class="dot" style="background:var(--ai)"></i>AI-model</span>
+      <span><i class="dot" style="background:var(--truth)"></i>Echt (onderzoeker)</span>
+    </div>
+    ${POOL.some(r=>!r.clip)?'<span class="demo-flag">Demoversie · nagetekende beelden</span>':''}
+    <button class="btn" id="go">Start de quiz</button>`));
+  document.getElementById("go").onclick=()=>{RONDES=trek();t0spel=performance.now();vraag();window.scrollTo(0,0);};
+}
+
+function scherm(r){
+  const media = r.clip ? `<video src="${r.clip}" muted playsinline></video>` : `<canvas width="640" height="480"></canvas>`;
+  return `<div class="screen">${media}<div class="ended" hidden><span>Fragment afgelopen</span></div><div class="melding" hidden></div></div>`;
+}
+
+function vraag(){
+  stopAnim(); antwoord={};
+  const r=RONDES[ronde], laatste=ronde===RONDES.length-1;
+  app.replaceChildren(el(`
+    <div class="progress"><span>Fragment <b>${ronde+1}</b> / ${RONDES.length}</span><span>${r.loc}</span></div>
+    <div class="bar"><i style="width:${ronde/RONDES.length*100}%"></i></div>
+    ${scherm(r)}
+    <h2>Wat zie je op de bloemen?</h2>
+    <div class="counts">${ORDES.map(o=>`
+      <div class="row"><span><span class="name">${o.naam}</span><span class="latin">${o.latijn}</span></span>
+        <span class="step">
+          <button type="button" id="min-${o.id}" aria-label="${o.naam} min één">−</button>
+          <output id="n-${o.id}" class="zero">0</output>
+          <button type="button" id="plus-${o.id}" aria-label="${o.naam} plus één">+</button>
+        </span></div>`).join("")}
+    </div>
+    <p class="muted">Niks gezien? Laat alles op 0 staan.</p>
+    <div class="acties">
+      <button class="btn ghost" id="opnieuw-kijk" disabled>↻ Opnieuw</button>
+      <button class="btn" id="klaar" disabled>${laatste?'Klaar, bekijk de uitslag':'Volgend fragment'}</button>
+    </div>`));
+  ORDES.forEach(o=>{
+    const out=document.getElementById("n-"+o.id);
+    const zet=v=>{antwoord[o.id]=Math.max(0,Math.min(9,v));out.textContent=antwoord[o.id];out.classList.toggle("zero",!antwoord[o.id]);};
+    document.getElementById("min-"+o.id).onclick=()=>zet(n(antwoord,o.id)-1);
+    document.getElementById("plus-"+o.id).onclick=()=>zet(n(antwoord,o.id)+1);
+  });
+  document.getElementById("klaar").onclick=()=>{
+    uitslag.push({jij:gelijk(antwoord,r.echt), ai:gelijk(r.ai,r.echt), antwoord:{...antwoord}});
+    if(laatste){duurSpel=(performance.now()-t0spel)/1000; eind();} else {ronde++; vraag(); window.scrollTo(0,0);}
+  };
+  const knopO=document.getElementById("opnieuw-kijk"), knopV=document.getElementById("klaar");
+  const ended=app.querySelector(".ended");
+  const klaar=()=>{ended.hidden=false;knopO.disabled=false;knopV.disabled=false;};
+  const speel=()=>{ended.hidden=true;knopO.disabled=true;
+    const v=app.querySelector("video");
+    if(v) speelVideo(v, app.querySelector(".melding"), klaar);
+    else teken(app.querySelector("canvas"),r,ronde,DUUR,klaar);
+  };
+  knopO.onclick=speel;
+  speel();
+}
+
+/* Korte uitleg per fragment, afgeleid van jouw telling en die van de AI */
+const WOORD={mot:["mot","motten"],vlieg:["vlieg","vliegen"],kever:["kever","kevers"],
+  wesp:["wesp of bij","wespen of bijen"],anders:["ander beestje","andere beestjes"]};
+function lijst(o){
+  const d=ORDES.filter(x=>n(o,x.id)>0).map(x=>{const k=n(o,x.id),w=WOORD[x.id]||[x.id,x.id];return k===1?`een ${w[0]}`:`${k} ${w[1]}`;});
+  return d.length<2?(d[0]||"niets"):d.slice(0,-1).join(", ")+" en "+d[d.length-1];
+}
+function uitleg(r){
+  const E=r.echt||{}, A=r.ai||{}, te=totaal(E), ta=totaal(A);
+  if(gelijk(A,E)) return te ? "De AI telde dit goed." : "Niets te zien, en de AI zag ook niets.";
+  if(!te) return `Er zat niets op de bloem, maar de AI zag ${lijst(A)}.`;
+  if(!ta) return `De AI miste ${lijst(E)}. Een insect telt pas mee als de AI het minstens 30 keer herkent, zo'n 2 seconden.`;
+  const mis={}, extra={};
+  ORDES.forEach(o=>{const d=n(E,o.id)-n(A,o.id); if(d>0) mis[o.id]=d; if(d<0) extra[o.id]=-d;});
+  const zm=Object.keys(mis).length, ze=Object.keys(extra).length;
+  if(te===ta && zm && ze) return `De AI hield ${lijst(mis)} voor ${lijst(extra)}.`;
+  if(!zm) return `De AI telde ${lijst(extra)} te veel. Dat gebeurt als één insect even wegvalt en daarna als nieuw wordt geteld.`;
+  if(!ze) return `De AI miste ${lijst(mis)}.`;
+  return `De AI telde ${lijst(A)}, maar het ${te===1?"was":"waren"} ${lijst(E)}.`;
+}
+
+/* Speelt een clip één keer af. Blokkeert de browser dat, dan verschijnt een afspeelknop. */
+function speelVideo(v, melding, klaar){
+  v.muted=true; v.defaultMuted=true; v.playsInline=true;
+  melding.hidden=true;
+  v.onended=klaar;
+  v.onerror=()=>{melding.innerHTML=`<p>Clip niet gevonden: ${v.getAttribute("src")}</p>`;melding.hidden=false;klaar();};
+  try{ v.currentTime=0; }catch(e){}
+  const p=v.play();
+  if(p&&p.catch) p.catch(err=>{
+    if(v.error){ v.onerror(); return; }
+    melding.innerHTML='<button type="button">▶ Speel fragment</button>'; melding.hidden=false;
+    melding.querySelector("button").onclick=()=>{melding.hidden=true; v.play().catch(()=>{melding.hidden=false;});};
+  });
+}
+
+function tekst(o){
+  const d=ORDES.filter(x=>n(o,x.id)).map(x=>`${n(o,x.id)} ${x.naam.split(" /")[0].toLowerCase()}`);
+  return d.length?d.join(", "):"niks";
+}
+
+function som(get){const t={};ORDES.forEach(o=>t[o.id]=RONDES.reduce((x,r,i)=>x+n(get(r,i),o.id),0));return t;}
+
+function eind(){
+  stopAnim(); window.scrollTo(0,0);
+  const N=RONDES.length;
+  const tJ=som((r,i)=>uitslag[i].antwoord), tA=som(r=>r.ai), tE=som(r=>r.echt);
+  const afw=RONDES.reduce((x,r,i)=>x+ORDES.reduce((y,o)=>y+Math.abs(n(uitslag[i].antwoord,o.id)-n(r.echt,o.id)),0),0);
+  // bezoeken goed = per fragment en groep het deel dat klopt; te veel = wat erbij verzonnen is
+  const tel=get=>RONDES.reduce((acc,r,i)=>{ORDES.forEach(o=>{const g=n(get(r,i),o.id),e=n(r.echt,o.id);
+    acc.goed+=Math.min(g,e); acc.teveel+=Math.max(0,g-e);}); return acc;},{goed:0,teveel:0});
+  const J=tel((r,i)=>uitslag[i].antwoord), A=tel(r=>r.ai), E=totaal(tE);
+  const pnt=t=>Math.max(0,t.goed-(E-t.goed)-t.teveel);   // goed - gemist - te veel
+  const pJ=pnt(J), pA=pnt(A);
+  const duizend=`Het model heeft duizenden beelden gezien, jij er net ${N}.`;
+  const [kop,sub] = pJ>pA ? ["Je was beter dan de AI.",`Knap! ${duizend} Mensen zien nog steeds dingen die het model mist.`]
+            : pJ===pA ? ["Gelijkspel met de AI.",`${duizend} Samen zijn jullie het sterkst.`]
+            : ["De AI won deze keer.",duizend];
+  const extra=t=>`<span class="split"><span class="ok">${t.goed} goed</span><span>${t.teveel} te veel</span><span>${E-t.goed} gemist</span></span>`;
+  const cel=(v,e)=>`<td class="num ${v!==e?'miss':''}">${v}</td>`;
+  app.replaceChildren(el(`
+    <span class="eyebrow">Uitslag</span>
+    <h1>${kop}</h1>
+    <div class="score three">
+      <div><span class="lbl">Jij</span><span class="big">${J.goed}<span class="muted of">/${E}</span></span><span class="sub">bezoeken goed</span>${extra(J)}</div>
+      <div><span class="lbl" style="color:var(--ai)">AI-model</span><span class="big" style="color:var(--ai)">${A.goed}<span class="muted of">/${E}</span></span><span class="sub">bezoeken goed</span>${extra(A)}</div>
+      <div><span class="lbl" style="color:var(--truth)">Echt</span><span class="big" style="color:var(--truth)">${E}</span><span class="sub">echte bezoeken</span><span class="split"><span>in ${N} fragmenten</span></span></div>
+    </div>
+    <p>${sub} Punten = goed − gemist − te veel: jij <b class="mono">${pJ}</b> ${pJ===1?'punt':'punten'}, de AI <b class="mono">${pA}</b>. Jouw tijd: <b class="mono">${duurSpel.toFixed(1)} s</b>.</p>
+
+    <h2>Wat is er geteld?</h2>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>Groep</th><th class="you">Jij</th><th class="ai">AI</th><th class="truth">Echt</th></tr></thead>
+      <tbody>${ORDES.map(o=>`<tr><td>${o.naam}</td>${cel(tJ[o.id],tE[o.id])}${cel(tA[o.id],tE[o.id])}<td class="num">${tE[o.id]}</td></tr>`).join("")}
+      <tr class="tot"><td>Totaal</td>${cel(totaal(tJ),totaal(tE))}${cel(totaal(tA),totaal(tE))}<td class="num">${totaal(tE)}</td></tr></tbody>
+    </table></div>
+
+    <details class="detail">
+      <summary>Bekijk per fragment, met de ogen van de AI</summary>
+      <div class="results">${RONDES.map((r,i)=>{const u=uitslag[i];return `
+        <div class="res-row">
+          <div class="res-head"><b>${i+1}</b><span class="muted">${r.loc} · ${r.tijd}</span></div>
+          <div class="screen ai-view" data-i="${i}">${r.aiClip?`<video src="${r.aiClip}" muted playsinline preload="metadata"></video>`:`<canvas width="640" height="480"></canvas>`}
+            <button type="button" class="play">▶ Zo zag de AI het</button></div>
+          <dl>
+            <dt>Jij</dt><dd>${tekst(u.antwoord)} <span class="${u.jij?'ok':'no'}">${u.jij?'✓':'✗'}</span></dd>
+            <dt style="color:var(--ai)">AI</dt><dd>${tekst(r.ai)} <span class="${u.ai?'ok':'no'}">${u.ai?'✓':'✗'}</span>${r.aiConf!=null&&totaal(r.ai)?` <span class="muted">(${Math.round(r.aiConf*100)}% zeker)</span>`:''}</dd>
+            <dt style="color:var(--truth)">Echt</dt><dd>${tekst(r.echt)}</dd>
+          </dl>
+          <p class="fact">${[r.weetje, uitleg(r)].filter(Boolean).join(" ")}</p>
+        </div>`}).join("")}</div>
+    </details>
+
+    <form class="nick" id="nick">
+      <h2>Zet je score op de ranglijst</h2>
+      <label for="nicknaam">Kies een bijnaam</label>
+      <input id="nicknaam" maxlength="16" autocomplete="off" placeholder="bijv. Nachtuil" required>
+      <p class="muted">Gebruik geen echte achternaam. De ranglijst staat op het scherm bij de kraam.</p>
+      <button class="btn" type="submit">Op de ranglijst</button>
+    </form>
+    <button class="btn ghost" id="opnieuw">Nog een keer spelen</button>`));
+  document.getElementById("opnieuw").onclick=start;
+  const views=[...app.querySelectorAll(".ai-view")];
+  views.forEach(v=>{const i=+v.dataset.i, c=v.querySelector("canvas"); if(c) teken(c,RONDES[i],i,0,null,true);});
+  views.forEach(v=>{
+    const i=+v.dataset.i, knop=v.querySelector(".play");
+    knop.onclick=()=>{
+      stopAnim(); views.forEach(o=>{o.querySelector(".play").hidden=false; const ov=o.querySelector("video"); if(ov) ov.pause();});
+      knop.hidden=true;
+      const vid=v.querySelector("video");
+      if(vid){vid.muted=true;vid.defaultMuted=true;vid.currentTime=0;vid.onended=()=>knop.hidden=false;
+        vid.play().catch(()=>{knop.hidden=false;});}
+      else teken(v.querySelector("canvas"),RONDES[i],i,DUUR,()=>{knop.hidden=false;},true);
+    };
+  });
+  document.getElementById("nick").onsubmit=e=>{
+    e.preventDefault();
+    const naam=document.getElementById("nicknaam").value.trim().slice(0,16);
+    if(!naam) return;
+    ranglijst({naam, score:pJ, n:E, afw, sec:+duurSpel.toFixed(1), ai:pA, datum:new Date().toISOString()});
+  };
+}
+
+/* ===== ranglijst =====
+   SCOREBORD_URL: web-app-URL van het Google Apps Script (leeg = demo).
+   Sorteren: hoogste percentage (punten / echte bezoeken), dan minste afwijking, dan snelste tijd. */
+const SCOREBORD_URL = "https://script.google.com/macros/s/AKfycby2FcaUb8k1dcUNs1nb8Rsu_pmJLXYcE4p4VZrZRoKF_ciY4AGjeqGSueeI8iKsEi_d/exec";
+const VOORBEELD = [
+  {naam:"Nachtuil",score:12,n:13,afw:1,sec:71.4},{naam:"Pijlstaart",score:10,n:12,afw:2,sec:58.2},{naam:"Mottenjager",score:10,n:12,afw:2,sec:83.0},
+  {naam:"Koninginnekruid",score:8,n:12,afw:4,sec:64.9},{naam:"Lampje",score:6,n:11,afw:6,sec:49.7}
+];
+async function ranglijst(mij){
+  stopAnim(); window.scrollTo(0,0);
+  mij.id=Math.random().toString(36).slice(2,10);
+  const N=mij.n;
+  app.replaceChildren(el(`<span class="eyebrow">Ranglijst</span><h1>Even je score doorgeven…</h1>`));
+  let lijst=VOORBEELD.slice(), demo=true;
+  if(SCOREBORD_URL){
+    try{
+      // Apps Script: POST zonder CORS-antwoord, daarna de lijst ophalen
+      await fetch(SCOREBORD_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(mij)});
+      const res=await fetch(SCOREBORD_URL+"?t="+Date.now()); lijst=await res.json(); demo=false;
+    }catch(e){ lijst=VOORBEELD.slice(); }
+  }
+  if(!lijst.some(x=>x.id===mij.id)) lijst.push({...mij});
+  const pct=x=>x.n?x.score/x.n:0;
+  lijst.sort((a,b)=>pct(b)-pct(a)||a.afw-b.afw||a.sec-b.sec);
+  const plek=lijst.findIndex(x=>x.id===mij.id)+1;
+  const toon=lijst.slice(0,10).map((x,i)=>({x,p:i+1}));
+  if(plek>10) toon.push({x:lijst[plek-1],p:plek});
+  app.replaceChildren(el(`
+    <span class="eyebrow">Ranglijst</span>
+    <h1>${plek===1?'Je staat bovenaan!':`Je staat op plek ${plek}.`}</h1>
+    <p class="muted">${lijst.length} deelnemers tot nu toe. Jij had ${mij.score} punten, de AI ${mij.ai}, van ${N} echte bezoeken.</p>
+    ${demo?'<span class="demo-flag">Demo · de andere namen zijn voorbeelden</span>':''}
+    <ol class="rank">${toon.map(({x,p})=>`
+      <li class="${p===plek?'me':''}"><span class="pos">${p}</span><span class="nm"></span><span class="sec">${(+x.sec).toFixed(0)} s</span><span class="sc">${x.score}/${x.n||N}</span></li>`).join("")}</ol>
+    <button class="btn ghost" id="opnieuw">Nog een keer spelen</button>`));
+  app.querySelectorAll(".rank .nm").forEach((s,i)=>s.textContent=toon[i].x.naam);
+  document.getElementById("opnieuw").onclick=start;
+}
+
+/* ============ nepbeeld: infrarood cameraframe ============ */
+function rng(seed){return ()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};}
+function teken(c,r,idx,duur,klaar,metAI){
+  const g=c.getContext("2d"), W=c.width, H=c.height, rnd=rng((r.seed??idx)*97+13);
+  const bloemen=[...Array(5)].map(()=>({x:80+rnd()*480,y:150+rnd()*200,r:38+rnd()*22,dots:[...Array(26)].map(()=>[rnd()*2-1,rnd()*2-1,rnd()])}));
+  const dieren=[];
+  ORDES.forEach(o=>{for(let i=0;i<n(r.echt,o.id);i++){const b=bloemen[(dieren.length*2+idx)%bloemen.length];
+    dieren.push({soort:o.id,b,ph:rnd()*6.28,sp:.6+rnd()*.8,ox:(rnd()-.5)*40,oy:(rnd()-.5)*30});}});
+  const blad = totaal(r.echt)===0;
+  /* AI-detecties koppelen aan de getekende dieren (alleen voor het nepbeeld) */
+  const det=[]; const vrij=new Set(dieren.map((d,i)=>i));
+  ORDES.forEach(o=>{let m=Math.min(n(r.ai,o.id),n(r.echt,o.id));
+    dieren.forEach((d,i)=>{if(m>0&&d.soort===o.id){det.push({i,cls:o.id});vrij.delete(i);m--;}});});
+  ORDES.forEach(o=>{let extra=n(r.ai,o.id)-n(r.echt,o.id);
+    while(extra-->0){const i=[...vrij].shift(); if(i!=null){det.push({i,cls:o.id});vrij.delete(i);} else if(blad) det.push({blad:true,cls:o.id});}});
+  const kort=id=>ORDES.find(o=>o.id===id).naam.split(" /")[0].toLowerCase();
+  const pos=[];
+  const f=t=>{
+    const s=t/1000;
+    const bg=g.createRadialGradient(W/2,H/2,40,W/2,H/2,W*.7);bg.addColorStop(0,"#5a5f5c");bg.addColorStop(1,"#141716");
+    g.fillStyle=bg;g.fillRect(0,0,W,H);
+    g.strokeStyle="#3d4240";g.lineWidth=3;
+    bloemen.forEach(b=>{g.beginPath();g.moveTo(b.x,b.y);g.lineTo(b.x+(b.x-W/2)*.1,H);g.stroke();});
+    if(blad){g.save();g.translate(470,250);g.rotate(Math.sin(s*2.2)*.35);g.fillStyle="#7c817d";
+      g.beginPath();g.ellipse(40,0,48,16,0,0,6.28);g.fill();g.restore();}
+    bloemen.forEach(b=>b.dots.forEach(([dx,dy,l])=>{g.fillStyle=`rgba(${190+l*50|0},${190+l*50|0},${185+l*50|0},.9)`;
+      g.beginPath();g.arc(b.x+dx*b.r,b.y+dy*b.r*.55,3+l*2.5,0,6.28);g.fill();}));
+    pos.length=0;
+    dieren.forEach(d=>{
+      const x=d.b.x+d.ox+Math.sin(s*d.sp+d.ph)*18, y=d.b.y+d.oy-12+Math.cos(s*d.sp*1.3+d.ph)*8;
+      pos.push(d.soort==="kever"?[x-Math.sin(s*d.sp+d.ph)*18,y]:[x,y]);
+      g.save();g.translate(x,y);
+      if(d.soort==="mot"){const w=.6+.4*Math.abs(Math.sin(s*9+d.ph));g.fillStyle="#e9ebe6";
+        g.beginPath();g.moveTo(0,0);g.lineTo(-22*w,-6);g.lineTo(-16*w,10);g.closePath();g.fill();
+        g.beginPath();g.moveTo(0,0);g.lineTo(22*w,-6);g.lineTo(16*w,10);g.closePath();g.fill();
+        g.fillStyle="#bfc2bd";g.fillRect(-2,-7,4,16);}
+      else if(d.soort==="vlieg"){g.fillStyle="rgba(230,235,230,.45)";g.beginPath();g.ellipse(-6,-4,7,3,-.5,0,6.28);g.ellipse(6,-4,7,3,.5,0,6.28);g.fill();
+        g.fillStyle="#1b1d1c";g.beginPath();g.ellipse(0,0,4,7,0,0,6.28);g.fill();}
+      else if(d.soort==="kever"){g.translate(-(Math.sin(s*d.sp+d.ph)*18),0);g.fillStyle="#232624";g.beginPath();g.ellipse(0,0,7,10,0,0,6.28);g.fill();
+        g.strokeStyle="#5a5e5b";g.lineWidth=1;g.beginPath();g.moveTo(0,-9);g.lineTo(0,9);g.stroke();}
+      else if(d.soort==="wesp"){g.fillStyle="rgba(230,235,230,.4)";g.beginPath();g.ellipse(-7,-5,8,3,-.4,0,6.28);g.ellipse(7,-5,8,3,.4,0,6.28);g.fill();
+        for(let i=0;i<4;i++){g.fillStyle=i%2?"#2a2c2b":"#c9ccc6";g.fillRect(-3,-6+i*4,6,4);}}
+      else{g.fillStyle="#cfd2cc";g.beginPath();g.arc(0,0,5,0,6.28);g.fill();}
+      g.restore();});
+    if(metAI){
+      const box=(x,y,w,h,kleur,label,dash)=>{g.save();g.strokeStyle=kleur;g.lineWidth=2.5;g.setLineDash(dash?[6,5]:[]);
+        g.strokeRect(x,y,w,h);g.setLineDash([]);g.font="600 13px JetBrains Mono, monospace";
+        const tw=g.measureText(label).width+10;g.fillStyle=kleur;g.fillRect(x-1,y-20,tw,20);
+        g.fillStyle="#0d1316";g.fillText(label,x+4,y-6);g.restore();};
+      const conf=r.aiConf!=null?" "+r.aiConf.toFixed(2):"";
+      det.forEach(d=>{ if(d.blad) box(455,222,120,56,"#7fd3c8",kort(d.cls)+conf);
+        else {const [x,y]=pos[d.i]; box(x-28,y-20,56,40,"#7fd3c8",kort(d.cls)+conf);} });
+      pos.forEach(([x,y],i)=>{ if(!det.some(d=>d.i===i)) box(x-28,y-20,56,40,"#eab75b","gemist",true); });
+    }
+    g.fillStyle="rgba(255,255,255,.85)";g.font="600 14px JetBrains Mono, monospace";
+    g.fillText(`${r.loc||"PICT"}  ${r.tijd}:${String(Math.floor(s)%60).padStart(2,"0")}  IR`,14,24);
+    g.fillText(`${(Math.floor(s*15)%900).toString().padStart(4,"0")} / 15fps`,W-150,H-16);
+    if(t0==null) t0=t;
+    if(t-t0<duur && !reduce) anim=requestAnimationFrame(f);
+    else if(t-t0>=duur){if(duur)anim=null;klaar&&klaar();}
+    else {anim=null;setTimeout(()=>klaar&&klaar(),duur);}
+  };
+  let t0=null;
+  if(duur===0){ f(performance.now()); return; }
+  stopAnim(); anim=requestAnimationFrame(f);
+}
+start();
+laadRondes();
+</script>
+
+</body>
+</html>
