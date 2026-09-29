@@ -358,12 +358,12 @@ function eind(){
       <tr class="tot"><td>Totaal</td>${cel(totaal(tJ),totaal(tE))}${cel(totaal(tA),totaal(tE))}<td class="num">${totaal(tE)}</td></tr></tbody>
     </table></div>
 
-    <details class="detail">
-      <summary>Bekijk per fragment, met de ogen van de AI</summary>
+    <details class="detail" open>
+      <summary>Per fragment: zo zag de AI het</summary>
       <div class="results">${RONDES.map((r,i)=>{const u=uitslag[i];return `
         <div class="res-row">
           <div class="res-head"><b>${i+1}</b><span class="muted">${r.loc} · ${r.tijd}</span></div>
-          <div class="screen ai-view" data-i="${i}">${r.aiClip?`<video src="${r.aiClip}" muted playsinline preload="metadata"></video>`:`<canvas width="640" height="480"></canvas>`}
+          <div class="screen ai-view" data-i="${i}">${r.aiClip?`<video src="${r.aiClip}#t=0.1" muted playsinline preload="metadata"></video>`:`<canvas width="640" height="480"></canvas>`}
             <button type="button" class="play">▶ Zo zag de AI het</button></div>
           <dl>
             <dt>Jij</dt><dd>${tekst(u.antwoord)} <span class="${u.jij?'ok':'no'}">${u.jij?'✓':'✗'}</span></dd>
