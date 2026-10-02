@@ -76,13 +76,14 @@ dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:u
 dd{margin:0}
 .res-row .fact{font-size:.9rem}
 
-.ended{position:absolute;left:10px;bottom:10px;display:flex}
 .ended span{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:#e6ebe5;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:6px}
 .melding{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,14,16,.6);padding:16px;text-align:center}
 .melding button{font:700 1rem var(--body);padding:12px 18px;border-radius:999px;border:0;background:var(--flower);color:#1a0f16;cursor:pointer}
 .melding p{color:#e6ebe5;font-family:var(--mono);font-size:.8rem;margin:0}
-.acties{display:grid;grid-template-columns:auto 1fr;gap:10px}
-.acties .ghost{width:auto}
+.acties{position:sticky;bottom:0;z-index:5;padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 75%,transparent)}
+.ended{position:absolute;left:10px;right:10px;bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.opnieuw-beeld{font:700 .95rem var(--body);padding:10px 16px;border-radius:999px;border:0;background:var(--flower);color:#1a0f16;cursor:pointer}
+.opnieuw-beeld:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
 .btn:disabled{opacity:.4;cursor:default}
 
 .score.three{grid-template-columns:repeat(3,1fr)}
@@ -114,6 +115,8 @@ tr.tot td{font-weight:700;border-bottom:0}
 .groepen dl{display:grid;grid-template-columns:minmax(7.5em,auto) 1fr;gap:8px 12px;margin:0;border-top:1px solid var(--line);padding-top:10px}
 .groepen dt{font-weight:700}
 .groepen dd{margin:0;color:var(--muted);font-size:.92rem}
+.scrollhint{font:700 .95rem var(--body);color:var(--ai);background:transparent;border:1px dashed var(--ai);border-radius:12px;padding:12px 14px;cursor:pointer;text-align:center}
+.scrollhint:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 <style>body{margin:0}</style>
@@ -134,7 +137,6 @@ const ORDES = [
   {id:"mot",   naam:"Mot / vlinder", latijn:"Lepidoptera"},
   {id:"vlieg", naam:"Vlieg / mug",   latijn:"Diptera"},
   {id:"kever", naam:"Kever",         latijn:"Coleoptera"},
-  {id:"wesp",  naam:"Wesp / bij",    latijn:"Hymenoptera"},
   {id:"anders",naam:"Iets anders",   latijn:"overige ordes"}
 ];
 const DUUR = 3000; // lengte nepfragment in ms
@@ -218,7 +220,6 @@ function start(){
         <dt>Mot / vlinder</dt><dd>Nachtvlinders, met brede vleugels. Ook rupsen tellen hier mee.</dd>
         <dt>Vlieg / mug</dt><dd>Vliegen, muggen en zweefvliegen: twee vleugels, vaak klein en snel.</dd>
         <dt>Kever</dt><dd>Stevig lijf met harde dekschilden.</dd>
-        <dt>Wesp / bij</dt><dd>Wespen, bijen en hommels, met een wespentaille.</dd>
         <dt>Iets anders</dt><dd>Spinnen, hooiwagens, oorwormen, wantsen, sprinkhanen en andere beestjes.</dd>
       </dl>
     </div>
@@ -235,7 +236,7 @@ function start(){
 
 function scherm(r){
   const media = r.clip ? `<video src="${r.clip}" muted playsinline></video>` : `<canvas width="640" height="480"></canvas>`;
-  return `<div class="screen">${media}<div class="ended" hidden><span>Fragment afgelopen</span></div><div class="melding" hidden></div></div>`;
+  return `<div class="screen">${media}<div class="ended" hidden><span>Fragment afgelopen</span><button type="button" class="opnieuw-beeld">↻ Opnieuw</button></div><div class="melding" hidden></div></div>`;
 }
 
 function vraag(){
@@ -256,7 +257,6 @@ function vraag(){
     </div>
     <p class="muted">Niks gezien? Laat alles op 0 staan.</p>
     <div class="acties">
-      <button class="btn ghost" id="opnieuw-kijk" disabled>↻ Opnieuw</button>
       <button class="btn" id="klaar" disabled>${laatste?'Klaar, bekijk de uitslag':'Volgend fragment'}</button>
     </div>`));
   ORDES.forEach(o=>{
@@ -269,10 +269,10 @@ function vraag(){
     uitslag.push({jij:gelijk(antwoord,r.echt), ai:gelijk(r.ai,r.echt), antwoord:{...antwoord}});
     if(laatste){duurSpel=(performance.now()-t0spel)/1000; eind();} else {ronde++; vraag(); window.scrollTo(0,0);}
   };
-  const knopO=document.getElementById("opnieuw-kijk"), knopV=document.getElementById("klaar");
-  const ended=app.querySelector(".ended");
-  const klaar=()=>{ended.hidden=false;knopO.disabled=false;knopV.disabled=false;};
-  const speel=()=>{ended.hidden=true;knopO.disabled=true;
+  const knopV=document.getElementById("klaar");
+  const ended=app.querySelector(".ended"), knopO=ended.querySelector(".opnieuw-beeld");
+  const klaar=()=>{ended.hidden=false;knopV.disabled=false;};
+  const speel=()=>{ended.hidden=true;
     const v=app.querySelector("video");
     if(v) speelVideo(v, app.querySelector(".melding"), klaar);
     else teken(app.querySelector("canvas"),r,ronde,DUUR,klaar);
@@ -339,17 +339,18 @@ function eind(){
   const [kop,sub] = pJ>pA ? ["Je was beter dan de AI.",`Knap! ${duizend} Mensen zien nog steeds dingen die het model mist.`]
             : pJ===pA ? ["Gelijkspel met de AI.",`${duizend} Samen zijn jullie het sterkst.`]
             : ["De AI won deze keer.",duizend];
-  const extra=t=>`<span class="split"><span class="ok">${t.goed} goed</span><span>${t.teveel} te veel</span><span>${E-t.goed} gemist</span></span>`;
+  const extra=t=>`<span class="split"><span class="ok">${t.goed} goed</span><span>${E-t.goed} gemist</span><span>${t.teveel} te veel</span></span>`;
   const cel=(v,e)=>`<td class="num ${v!==e?'miss':''}">${v}</td>`;
   app.replaceChildren(el(`
     <span class="eyebrow">Uitslag</span>
     <h1>${kop}</h1>
     <div class="score three">
-      <div><span class="lbl">Jij</span><span class="big">${J.goed}<span class="muted of">/${E}</span></span><span class="sub">bezoeken goed</span>${extra(J)}</div>
-      <div><span class="lbl" style="color:var(--ai)">AI-model</span><span class="big" style="color:var(--ai)">${A.goed}<span class="muted of">/${E}</span></span><span class="sub">bezoeken goed</span>${extra(A)}</div>
-      <div><span class="lbl" style="color:var(--truth)">Echt</span><span class="big" style="color:var(--truth)">${E}</span><span class="sub">echte bezoeken</span><span class="split"><span>in ${N} fragmenten</span></span></div>
+      <div><span class="lbl">Jij</span><span class="big">${pJ}</span><span class="sub">${pJ===1?'punt':'punten'}</span>${extra(J)}</div>
+      <div><span class="lbl" style="color:var(--ai)">AI-model</span><span class="big" style="color:var(--ai)">${pA}</span><span class="sub">${pA===1?'punt':'punten'}</span>${extra(A)}</div>
+      <div><span class="lbl" style="color:var(--truth)">Echt</span><span class="big" style="color:var(--truth)">${E}</span><span class="sub">bezoeken</span><span class="split"><span>in ${N} fragmenten</span></span></div>
     </div>
-    <p>${sub} Punten = goed − gemist − te veel: jij <b class="mono">${pJ}</b> ${pJ===1?'punt':'punten'}, de AI <b class="mono">${pA}</b>. Jouw tijd: <b class="mono">${duurSpel.toFixed(1)} s</b>.</p>
+    <p>${sub} Punten = goed − gemist − te veel. Jouw tijd: <b class="mono">${duurSpel.toFixed(1)} s</b>.</p>
+    <button type="button" class="scrollhint" id="naarAI">↓ Scroll naar beneden om te zien hoe de AI het deed</button>
 
     <h2>Wat is er geteld?</h2>
     <div style="overflow-x:auto"><table>
@@ -358,7 +359,7 @@ function eind(){
       <tr class="tot"><td>Totaal</td>${cel(totaal(tJ),totaal(tE))}${cel(totaal(tA),totaal(tE))}<td class="num">${totaal(tE)}</td></tr></tbody>
     </table></div>
 
-    <details class="detail" open>
+    <details class="detail" id="aiResultaten" open>
       <summary>Per fragment: zo zag de AI het</summary>
       <div class="results">${RONDES.map((r,i)=>{const u=uitslag[i];return `
         <div class="res-row">
@@ -383,6 +384,7 @@ function eind(){
     </form>
     <button class="btn ghost" id="opnieuw">Nog een keer spelen</button>`));
   document.getElementById("opnieuw").onclick=start;
+  document.getElementById("naarAI").onclick=()=>document.getElementById("aiResultaten").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
   const views=[...app.querySelectorAll(".ai-view")];
   views.forEach(v=>{const i=+v.dataset.i, c=v.querySelector("canvas"); if(c) teken(c,RONDES[i],i,0,null,true);});
   views.forEach(v=>{
